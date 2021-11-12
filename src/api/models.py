@@ -26,7 +26,7 @@ OPERATIONTYPE = [
 
 class Trade(models.Model):
     """
-    Ativo Model
+    Trade Model
     Defines the attributes of a trade
     """
 

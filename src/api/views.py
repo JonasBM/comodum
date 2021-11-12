@@ -7,8 +7,9 @@ from api.serializers import PortifolioSerializer
 
 class PortifolioView(generics.CreateAPIView):
     """
-    Password change view
-    Only allow changing own password
+    PortfolioView view
+    Get the trades via post, and process the data
+    returning a portfolio serialized model
     """
     model = Portifolio
     authentication_classes = [APIKeyAuthentication]

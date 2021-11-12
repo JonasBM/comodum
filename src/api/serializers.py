@@ -6,6 +6,9 @@ from api.models import COMPRA, VENDA, Portifolio, Trade
 
 
 def quantidade_acumulada(instance):
+    """
+    Calculate the quantity, reading the current and past trades
+    """
     buys = Trade.objects.filter(
         data__lte=instance.data, ativo=instance.ativo, operacao=COMPRA).aggregate(
         quantity=Sum(F('quantidade')))['quantity'] or 0
@@ -16,6 +19,9 @@ def quantidade_acumulada(instance):
 
 
 def preco_medio(instance):
+    """
+    Calculate the average price, reading the current and past trades
+    """
     quantidade_acumulada = instance.quantidade_acumulada
     if quantidade_acumulada == 0:
         return None
@@ -31,7 +37,9 @@ def preco_medio(instance):
 
 
 def lucro(instance):
-
+    """
+    Calculate the profit, reading the current and past trades
+    """
     if instance.operacao == COMPRA:
         return None
 
@@ -57,6 +65,9 @@ def lucro(instance):
 
 
 class TradeSerializer(serializers.ModelSerializer):
+    """
+    Trade serializer
+    """
     id = serializers.IntegerField(required=False)
 
     class Meta:
@@ -66,6 +77,15 @@ class TradeSerializer(serializers.ModelSerializer):
 
 
 class PortifolioSerializer(serializers.ModelSerializer):
+    """
+    Portfolio serializer
+    Save the portifolio, and all trades in it
+    On create, for each trade
+    calculate and apply the processed data filds:
+        quantidade_acumulada
+        preco_medio
+        lucro
+    """
     trades = TradeSerializer(many=True)
 
     class Meta:
