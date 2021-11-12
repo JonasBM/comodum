@@ -81,6 +81,10 @@ class PortifolioSerializer(serializers.ModelSerializer):
 
         portifolio = Portifolio.objects.create(**validated_data)
         for trade_data in trades_data:
-
-            Trade.objects.create(portifolio=portifolio, **trade_data)
+            instance = Trade.objects.create(
+                portifolio=portifolio, **trade_data)
+            instance.quantidade_acumulada = quantidade_acumulada(instance)
+            instance.preco_medio = preco_medio(instance)
+            instance.lucro = lucro(instance)
+            instance.save()
         return portifolio
